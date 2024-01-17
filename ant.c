@@ -9,7 +9,7 @@ board init_board(int m, int n, int k) {
 	b->n = n;
 	b->k = k;
 	b->w = m / 2;
-	b->k = n / 2;
+	b->kier = n / 2;
 	int i, j;
 	b->board = malloc(sizeof(*(b->board)) * m);
 	if (b->board == NULL) {
