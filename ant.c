@@ -253,6 +253,7 @@ wchar_t* symbol(board b, int k, int w) {
 				return L"◀";
 		}
 	}
+	return 0;
 }
 
 void fprint_board(FILE * stream, board b, int x) {
@@ -344,6 +345,8 @@ void ant(board b, int i, char* name) {
 				exit(5);
 			}
 		}
+//		if (b->w == b->m/2 && b->k == b->n/2)
+//			printf("%d\n", j);
 		fprint_board(f, b, j);
 		if (name != NULL)
 			fclose(f);

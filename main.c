@@ -16,6 +16,8 @@ int main(int argc, char **argv) {
 		b = init_board(p->m, p->n, p->k);
 	if (p->wczytaj != NULL)
 		b = wczytaj(p->wczytaj, p->k);
+	if (b == NULL)
+		return 1;
 	ant(b, p->i, p->name);
 	free_board(b);
 	free(p);
