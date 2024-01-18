@@ -107,6 +107,7 @@ int main(int argc, char **argv) {
 	board b = init_board(m, n, k);
 	if (b != NULL)
 		printf("Sukces\n");
+	print_board(b);
 	free_board(b);
 	return 0;
 }
