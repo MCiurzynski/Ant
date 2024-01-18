@@ -15,9 +15,14 @@ typedef struct parametrs {
 	int n;
 	int i;
 	int k;
-	int end;
+	int generuj;
+	char *wczytaj;
 	char *name;
 } *param;
+
+void generuj(int, int, int, char*);
+
+board wczytaj(char*, int);
 
 param getparam(int, char**);
 
