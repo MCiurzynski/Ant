@@ -52,25 +52,20 @@ int int_digits( int n ) {
     return 10;
 }
 
-void file_out( board b, char *name, int file_no, int digits )
+char *file_name( char *name, int file_no, int digits )
 {
-        char buffor[ strlen(name) + 1 + digits ];
-        sprintf( buffor, "%s_%0*d", name, digits, file_no );
-	FILE *f = fopen( buffor, "w" );
-	int i;
-	//tu wypisanie do pliku
-	fclose(f);
-}
 
-board langton( board b, int n, char *name )
-{
-	int digits = int_digits(n);
-	int i = 0;
-	//for( i = 0; i < n; i++ )
+        char *buffor = malloc( ( strlen( name ) + 1 + digits ) * sizeof( char ) + 1 );
+	if( buffor == NULL ){
+		printf("Blad alokacji pamieci!\n");
+		return NULL;
+	}
+        sprintf( buffor, "%s_%0*d", name, digits, file_no );
+	return buffor;
 }
 
 wchar_t* symbol(board b, int k, int w) {
-	if (b->board[k][w] == 0) {
+	if (b->board[w][k] == 0) {
 		switch (b->kier) {
 			case 0:
 				return L"△";
@@ -96,11 +91,12 @@ wchar_t* symbol(board b, int k, int w) {
 	}
 }
 
-void print_board(board b, FILE * stream) {
+void print_board(board b, FILE * stream, int x, int digits ) {
 	int i, j;
 	setlocale(LC_ALL, "C.UTF-8");
 	if (stream == stdout)
 		printf("\033[0;30;47m\n");
+	fprintf(stream, "#%0*d\n", digits, x);
 	fprintf(stream, "┌");
 	for (i = 0; i < b->n; i++)
 		fprintf(stream, "─");
@@ -126,4 +122,93 @@ void print_board(board b, FILE * stream) {
 	fprintf(stream, "┘");
 	if (stream == stdout)
 		printf("\033[0m\n");
+}
+
+void langton( board b, int n, char *name )
+{
+        int digits = int_digits(n);
+        int i = 0;
+	FILE *f;
+	
+	printf("Nazwa:%s.\n", name);
+
+	if( name == NULL ){
+		printf("jp2\n");
+		f = stdout;
+	}
+	if( f != stdout ){
+		f = fopen( file_name( name, i, digits ), "w" );
+	}
+	if( f == NULL ){
+		fprintf( stderr, "Nie moge utworzyc pliku!\n" );
+	}
+	print_board(b, f, i, digits);
+
+	if( f != stdout ){
+		fclose(f);
+	}
+
+        for( i = 1; i < n; i++ ){
+		switch( b->board[b->w][b->k] ){
+			case 0:
+				switch( b->kier ){
+					case 0:
+						b->kier = 1;
+						b->board[b->w][b->k] = 1;
+						b->k += 1;
+						break;
+					case 1:
+                                                b->kier = 2;
+						b->board[b->w][b->k] = 1;
+                                                b->w += 1;
+                                                break;
+					case 2:
+                                                b->kier = 3;
+						b->board[b->w][b->k] = 1;
+                                                b->k -= 1;
+                                                break;
+					case 3:
+                                                b->kier = 0;
+						b->board[b->w][b->k] = 1;
+                                                b->w -= 1;
+                                                break;
+				}
+				break;
+			case 1:
+                                switch( b->kier ){
+                                        case 0:
+                                                b->kier = 3;
+                                                b->board[b->w][b->k] = 0;
+                                                b->k -= 1;
+                                                break;
+                                        case 1:
+                                                b->kier = 0;
+                                                b->board[b->w][b->k] = 0;
+                                                b->w -= 1;
+                                                break;
+                                        case 2:
+                                                b->kier = 1;
+                                                b->board[b->w][b->k] = 0;
+                                                b->k += 1;
+                                                break;
+                                        case 3:
+                                                b->kier = 2;
+                                                b->board[b->w][b->k] = 0;
+                                                b->w += 1;
+                                                break;
+				}
+				break;
+		}
+
+        	if( f != stdout ){
+	                f = fopen( file_name( name, i, digits ), "w" );
+       		}
+        	if( f == NULL ){
+                	fprintf( stderr, "Nie moge utworzyc pliku!\n" );
+        	}
+        	print_board( b, f, i, digits );
+		if( f != stdout ){
+                	fclose(f);
+		}
+	}
 }

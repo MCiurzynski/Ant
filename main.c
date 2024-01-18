@@ -90,11 +90,11 @@ int main(int argc, char **argv) {
 		fprintf(stderr, "Nie wprowadzono wymaganego parametru k\n");
 		end = 1;
 	}
-	if(m == 0 || m > 50) {
+	if(m < 0 || m > 1000) {
 		printf("Wprowadzono niepawidlowy parametr 'm'\n");
 		end = 1;
 	}
-	if(n == 0 || n > 50) {
+	if(n < 0 || n > 1000) {
 		printf("Wprowadzono niepawidlowy parametr 'n'\n");
 		end = 1;
 	}
@@ -108,12 +108,7 @@ int main(int argc, char **argv) {
 	if (b != NULL)
 		printf("Sukces\n");
 
-	FILE * f;
-	if (name != NULL)
-		f = fopen(name, "w");
-	else
-		f = stdout;
-	print_board(b, f);
+	langton( b, i, name );
 	free_board(b);
 
 	return 0;
