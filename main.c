@@ -18,6 +18,7 @@ int main(int argc, char **argv) {
 					}
 					else
 						name = argv[optind];
+						//printf("%s\n", name);
 				}
 				else {
 					fprintf(stderr, "Nieznana opcja: '--%s'\n", optarg);
@@ -46,13 +47,13 @@ int main(int argc, char **argv) {
 				i = atoi(optarg);
 				break;
 			case 'k':
-				if (optarg[0] == '0')
+				if ( strcmp( optarg, "gora") == 0 )
 					k = 0;
-				if (optarg[0] == '1')
+				if ( strcmp( optarg, "prawo") == 0 )
 					k = 1;
-				if (optarg[0] == '2')
+				if ( strcmp( optarg, "dol") == 0 )
 					k = 2;
-				if (optarg[0] == '3')
+				if ( strcmp( optarg, "lewo") == 0 )
 					k = 3;
 				if (optarg[0] == '-') {
 					fprintf(stderr, "Parametr 'k' jest wymagany\n");
@@ -107,6 +108,8 @@ int main(int argc, char **argv) {
 	board b = init_board(m, n, k);
 	if (b != NULL)
 		printf("Sukces\n");
+	print_board(b);
+
 	free_board(b);
 	return 0;
 }
