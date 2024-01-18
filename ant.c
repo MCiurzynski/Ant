@@ -1,5 +1,7 @@
 #include <stdlib.h>
+#include <wchar.h>
 #include <stdio.h>
+#include <locale.h>
 #include "ant.h"
 #include <string.h>
 
@@ -10,8 +12,8 @@ board init_board(int m, int n, int k) {
 	b->m = m;
 	b->n = n;
 	b->kier = k;
-	b->y = m / 2;
-	b->x = n / 2;
+	b->w = m / 2;
+	b->k = n / 2;
 	int i, j;
 	b->board = malloc(sizeof(*(b->board)) * m);
 	if (b->board == NULL) {
@@ -35,17 +37,6 @@ void free_board(board b) {
 		free(b->board[i]);
 	free(b->board);
 	free(b);
-}
-
-void print_board( board b )
-{
-	int i, j;
-	for( i = 0; i < b->m; i++ ){
-		for( j = 0; j < b->n; j++ ){
-			printf("%d ", b->board[i][j]);
-		}
-		printf("\n");
-	}
 }
 
 int int_digits( int n ) {
@@ -76,4 +67,63 @@ board langton( board b, int n, char *name )
 	int digits = int_digits(n);
 	int i = 0;
 	//for( i = 0; i < n; i++ )
+}
+
+wchar_t* symbol(board b, int k, int w) {
+	if (b->board[k][w] == 0) {
+		switch (b->kier) {
+			case 0:
+				return L"△";
+			case 1:
+				return L"▷";
+			case 2:
+				return L"▽";
+			case 3:
+				return L"◁";
+		}
+	}
+	else {
+		switch (b->kier) {
+			case 0:
+				return L"▲";
+			case 1:
+				return L"▶";
+			case 2:
+				return L"▼";
+			case 3:
+				return L"◀";
+		}
+	}
+}
+
+void print_board(board b, FILE * stream) {
+	int i, j;
+	setlocale(LC_ALL, "C.UTF-8");
+	if (stream == stdout)
+		printf("\033[0;30;47m\n");
+	fprintf(stream, "┌");
+	for (i = 0; i < b->n; i++)
+		fprintf(stream, "─");
+	fprintf(stream, "┐\n");
+	for (i = 0; i < b->m; i++) {
+		fprintf(stream, "|");
+		for (j = 0; j < b->n; j++) {
+			if (b->k == j && b->w == i) {
+				fprintf(stream, "%ls", symbol(b, j, i));
+			}
+			else {
+				if (b->board[i][j] == 0)
+					fprintf(stream, " ");
+				else
+					fprintf(stream, "█");
+			}
+		}
+		fprintf(stream, "|\n");
+	}
+	fprintf(stream, "└");
+	for (i = 0; i < b->n ; i++)
+		fprintf(stream, "─");
+	fprintf(stream, "┘");
+	if (stream == stdout)
+		printf("\033[0m\n");
 }

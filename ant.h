@@ -14,6 +14,8 @@ board init_board(int, int, int);
 
 void free_board(board);
 
-void print_board(board);
+wchar_t* symbol(board, int, int);
+
+void print_board(board, FILE *);
 
 #endif
