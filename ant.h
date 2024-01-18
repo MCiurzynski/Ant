@@ -4,9 +4,9 @@
 typedef struct ant_board {
 	int m;
 	int n;
-	int w;
-	int k;
 	int kier;
+	int y;
+	int x;
 	int **board;
 } *board;
 
