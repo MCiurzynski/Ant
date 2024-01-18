@@ -4,6 +4,16 @@
 #include <locale.h>
 #include "ant.h"
 
+/*param getparam(int argc, char** argv) {
+	param p = malloc(sizeof(*p));
+	p->m = -1;
+	p->n = -1;
+	p->i = -1;
+	p->k = -1;
+	p->end = 0;
+	p->name = NULL;
+} */
+
 board init_board(int m, int n, int k) {
 	board b = malloc(sizeof(*b));
 	if (b == NULL)
@@ -39,7 +49,7 @@ void free_board(board b) {
 }
 
 wchar_t* symbol(board b, int k, int w) {
-	if (b->board[k][w] == 0) {
+	if (b->board[w][k] == 0) {
 		switch (b->kier) {
 			case 0:
 				return L"△";
@@ -65,11 +75,12 @@ wchar_t* symbol(board b, int k, int w) {
 	}
 }
 
-void print_board(board b, FILE * stream) {
+void fprint_board(FILE * stream, board b, int x) {
 	int i, j;
 	setlocale(LC_ALL, "C.UTF-8");
 	if (stream == stdout)
 		printf("\033[0;30;47m\n");
+	fprintf(stream, "%d:\n", x);
 	fprintf(stream, "┌");
 	for (i = 0; i < b->n; i++)
 		fprintf(stream, "─");
@@ -95,4 +106,67 @@ void print_board(board b, FILE * stream) {
 	fprintf(stream, "┘");
 	if (stream == stdout)
 		printf("\033[0m\n");
+}
+
+void move(board b) {
+	if (b->board[b->w][b->k] == 0) {
+		b->kier++;
+		if (b->kier == 4)
+			b->kier = 0;
+		b->board[b->w][b->k] = 1;
+	}
+	else {
+		b->kier--;
+		if (b->kier == -1)
+			b->kier = 3;
+		b->board[b->w][b->k] = 0;
+	}
+	switch (b->kier) {
+		case 0:
+			if (b->w == 0)
+				b->w = b->m - 1;
+			else
+				b->w--;
+			break;
+		case 1:
+			if (b->k == b->n - 1)
+				b->k = 0;
+			else
+				b->k++;
+			break;
+		case 2:
+			if (b->w == b->m - 1)
+				b->w = 0;
+			else
+				b->w++;
+			break;
+		case 3:
+			if (b->k == 0)
+				b->k = b->n - 1;
+			else
+				b->k--;
+			break;
+	}
+}
+
+void ant(board b, int i, char* name) {
+	int j;
+	char file[100];
+	FILE* f;
+	if (name == NULL)
+		f = stdout;
+	for (j = 0; j < i; j++) {
+		if (name != NULL) {
+			sprintf(file, "./boards/%s_%d", name, j);
+			f = fopen(file, "w");
+			if (f == NULL) {
+				fprintf(stderr, "Nie udalo sie otworzyc pliku %s\n", file);
+				exit(5);
+			}
+		}
+		fprint_board(f, b, j);
+		if (name != NULL)
+			fclose(f);
+		move(b);
+	}
 }

@@ -10,12 +10,27 @@ typedef struct ant_board {
 	int **board;
 } *board;
 
+typedef struct parametrs {
+	int m;
+	int n;
+	int i;
+	int k;
+	int end;
+	char *name;
+} *param;
+
+param getparam(int, char**);
+
 board init_board(int, int, int);
 
 void free_board(board);
 
 wchar_t* symbol(board, int, int);
 
-void print_board(board, FILE *);
+void fprint_board(FILE *, board, int);
+
+void move(board);
+
+void ant(board, int, char *);
 
 #endif
