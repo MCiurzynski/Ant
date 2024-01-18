@@ -68,27 +68,31 @@ wchar_t* symbol(board b, int k, int w) {
 void print_board(board b, FILE * stream) {
 	int i, j;
 	setlocale(LC_ALL, "C.UTF-8");
+	if (stream == stdout)
+		printf("\033[0;30;47m\n");
 	fprintf(stream, "┌");
 	for (i = 0; i < b->n; i++)
-		fprintf(stream, "──");
+		fprintf(stream, "─");
 	fprintf(stream, "┐\n");
 	for (i = 0; i < b->m; i++) {
 		fprintf(stream, "|");
 		for (j = 0; j < b->n; j++) {
 			if (b->k == j && b->w == i) {
-				fprintf(stream, "%ls ", symbol(b, j, i));
+				fprintf(stream, "%ls", symbol(b, j, i));
 			}
 			else {
 				if (b->board[i][j] == 0)
-					fprintf(stream, "  ");
+					fprintf(stream, " ");
 				else
-					fprintf(stream, "██");
+					fprintf(stream, "█");
 			}
 		}
 		fprintf(stream, "|\n");
 	}
 	fprintf(stream, "└");
 	for (i = 0; i < b->n ; i++)
-		fprintf(stream, "──");
-	fprintf(stream, "┘\n");
+		fprintf(stream, "─");
+	fprintf(stream, "┘");
+	if (stream == stdout)
+		printf("\033[0m\n");
 }
