@@ -12,7 +12,7 @@ int main(int argc, char **argv) {
 		switch (opt) {
 			case '-':
 				if (strcmp("name", optarg) == 0) {
-					if (argv[optind][0] == '-') {
+					if (optind == argc || argv[optind][0] == '-') {
 						fprintf(stderr, "Nie wprowadzono parametru '--name'\n");
 						return 4;
 					}
@@ -107,7 +107,12 @@ int main(int argc, char **argv) {
 	board b = init_board(m, n, k);
 	if (b != NULL)
 		printf("Sukces\n");
-	print_board(b);
+	FILE * f;
+	if (name != NULL)
+		f = fopen(name, "w");
+	else
+		f = stdout;
+	print_board(b, f);
 	free_board(b);
 	return 0;
 }

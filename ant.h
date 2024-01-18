@@ -16,6 +16,6 @@ void free_board(board);
 
 wchar_t* symbol(board, int, int);
 
-void print_board(board);
+void print_board(board, FILE *);
 
 #endif

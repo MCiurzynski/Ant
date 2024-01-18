@@ -65,32 +65,30 @@ wchar_t* symbol(board b, int k, int w) {
 	}
 }
 
-void print_board(board b) {
+void print_board(board b, FILE * stream) {
 	int i, j;
 	setlocale(LC_ALL, "C.UTF-8");
-	b->kier = 2;
-	b->board[6][6] = 1;
-	printf("┌");
+	fprintf(stream, "┌");
 	for (i = 0; i < b->n; i++)
-		printf("──");
-	printf("┐\n");
+		fprintf(stream, "──");
+	fprintf(stream, "┐\n");
 	for (i = 0; i < b->m; i++) {
-		printf("|");
+		fprintf(stream, "|");
 		for (j = 0; j < b->n; j++) {
 			if (b->k == j && b->w == i) {
-				printf("%ls ", symbol(b, j, i));
+				fprintf(stream, "%ls ", symbol(b, j, i));
 			}
 			else {
 				if (b->board[i][j] == 0)
-					printf("  ");
+					fprintf(stream, "  ");
 				else
-					printf("██");
+					fprintf(stream, "██");
 			}
 		}
-		printf("|\n");
+		fprintf(stream, "|\n");
 	}
-	printf("└");
+	fprintf(stream, "└");
 	for (i = 0; i < b->n ; i++)
-		printf("──");
-	printf("┘\n");
+		fprintf(stream, "──");
+	fprintf(stream, "┘\n");
 }
