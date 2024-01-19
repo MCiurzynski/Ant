@@ -32,10 +32,12 @@ void free_board(board);
 
 wchar_t* symbol(board, int, int);
 
-void fprint_board(FILE *, board, int);
+void fprint_board(FILE *, board, int, int);
 
 void move(board);
 
-void ant(board, int, char *);
+void ant(board, int, char *, int);
+
+int int_digits(int);
 
 #endif

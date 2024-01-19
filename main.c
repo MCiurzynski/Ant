@@ -18,9 +18,10 @@ int main(int argc, char **argv) {
 		b = wczytaj(p->wczytaj, p->k);
 	if (b == NULL)
 		return 1;
-	ant(b, p->i, p->name);
+	int digits = int_digits(p->i);
+	ant(b, p->i, p->name, digits);
 	free_board(b);
 	free(p);
-	printf("Zakonczono programi\n");
+	printf("Zakonczono program!\n");
 	return 0;
 }

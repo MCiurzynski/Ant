@@ -7,6 +7,19 @@
 #include <time.h>
 #include "ant.h"
 
+int int_digits( int n ) {
+    if (n < 10) return 1;
+    if (n < 100) return 2;
+    if (n < 1000) return 3;
+    if (n < 10000) return 4;
+    if (n < 100000) return 5;
+    if (n < 1000000) return 6;
+    if (n < 10000000) return 7;
+    if (n < 100000000) return 8;
+    if (n < 1000000000) return 9;
+    return 10;
+}
+
 void generuj(int m, int n, int prop, char* name) {
 	FILE * f = fopen(name, "w");
 	int i, j, los;
@@ -15,7 +28,7 @@ void generuj(int m, int n, int prop, char* name) {
 		fprintf(stderr, "Nie udalo sie otworzyc pliku\n");
 		return;
 	}
-	fprintf(f, "%d %d\n", m, n);
+	fprintf(f, "%dx%d\n\n", m, n);
 	for (i = 0; i < m; i++) {
 		for (j = 0; j < n; j++) {
 			los = rand() % 100;
@@ -66,100 +79,189 @@ param getparam(int argc, char** argv) {
 	p->wczytaj = NULL;
 	int opt, end = 0;
 	p->name = NULL;
+	int *ile = malloc( 123 * sizeof(int) );
+	if( ile == NULL ){
+		printf("Blad alokacji pamieci!\n");
+		return NULL;
+	}
+
 	while ((opt = getopt(argc, argv, ":-:n:m:i:p:k:g:w:")) != -1) {
 		switch (opt) {
 			case '-':
 				if (strcmp("name", optarg) == 0) {
-					if (optind == argc || argv[optind][0] == '-') {
-						fprintf(stderr, "Nie wprowadzono parametru '--name'\n");
-						return NULL;
+					ile['-']++;
+					if( ile['-'] < 2 ){
+						if ( optind == argc || argv[optind][0] == '-' ) {
+							fprintf(stderr, "Argument nr %d: Nie wprowadzono wartosci parametru '--name'\n", optind - 1);
+							end = 1;
+							//return NULL;
+						}
+						else{
+							p->name = argv[optind];
+						}
 					}
-					else
-						p->name = argv[optind];
+					if( ile['-'] == 2 ){
+						printf("Wystepuja powtorzenia paramteru --name\n");
+						end = 1;
+					}
 				}
 				else {
 					fprintf(stderr, "Nieznana opcja: '--%s'\n", optarg);
-					return NULL;
+					end = 1;
+					//return NULL;
 				}
 				break;
 			case 'm':
-				if (optarg[0] == '-') {
-					fprintf(stderr, "Parametr 'm' jest wymagany\n");
-					return NULL;
+				ile['m']++;
+				if( ile['m'] < 2 ){
+					if (optarg[0] == '-') {
+						fprintf(stderr, "Argument nr %d: Podaj wartosc dla parametru -m\n", optind - 2);
+						end = 1;
+						p->m = 0;
+						//return NULL;
+					}
+					else{
+						p->m = atoi(optarg);
+                                        	if ((p->m < 2 || p->m > 512) && p->m != -1) {
+                                                	printf("Argument nr %d: Wprowadzono niepawidlowa wartosc parametru -m\n", optind - 2);
+                                                	end = 1;
+                                        	}
+                                	}
 				}
-				p->m = atoi(optarg);
+				if( ile['-'] == 2 ){
+                                        printf("Wystepuja powtorzenia paramteru -m\n");
+                                	end = 1;
+                                }
 				break;
 			case 'n':
-				if (optarg[0] == '-') {
-					fprintf(stderr, "Parametr 'n' jest wymagany\n");
-					return NULL;
+				ile['n']++;
+				if( ile ['n'] < 2 ){
+					if (optarg[0] == '-') {
+						fprintf(stderr, "Argument nr %d: Podaj wartosc dla parametru n\n", optind - 2);
+						end = 1;
+						p->n = 0;
+						//return NULL;
+					}
+					else{
+						p->n = atoi(optarg);
+						if ((p->n < 2 || p->n > 512) && p->n != -1) {
+							printf("Argument nr %d: Wprowadzono niepawidlowa wartosc parametru -n\n", optind - 2);
+                					end = 1;
+        					}
+					}
 				}
-				p->n = atoi(optarg);
+				if( ile['n'] == 2 ){
+					printf("Wystepuja powtorzenia parametru -n\n");
+                                        end = 1;
+                                }
 				break;
 			case 'i':
-				if (optarg[0] == '-') {
-					fprintf(stderr, "Parametr 'i' jest wymagany\n");
-					return NULL;
+				ile['i']++;
+				if( ile['i'] < 2 ){
+					if (optarg[0] == '-') {
+						fprintf(stderr, "Argument nr %d: Podaj wartosc dla parametru i\n", optind - 2);
+						end = 1;
+						p->i = 0;
+						//return NULL;
+					}
+					else{
+						p->i = atoi(optarg);
+					}
 				}
-				p->i = atoi(optarg);
+				if( ile['i'] == 2 ){
+                                        printf("Wystepuja powtorzenia parametru -i\n");
+                                        end = 1;
+                                }
 				break;
 			case 'k':
-				if (optarg[0] == '0' && strlen(optarg) == 1)
-					p->k = 0;
-				if (atoi(optarg) == 1)
-					p->k = 1;
-				if (atoi(optarg) == 2)
-					p->k = 2;
-				if (atoi(optarg) == 3)
-					p->k = 3;
-				if (optarg[0] == '-') {
-					fprintf(stderr, "Parametr 'k' jest wymagany\n");
-					return NULL;
+				ile['k']++;
+				if( ile['k'] < 2 ){
+					if (optarg[0] == '-') {
+                                        	fprintf(stderr, "Argument nr %d: Podaj wartosc dla parametru k\n", optind - 2);
+                                        	end = 1;
+						p->k = 0;
+                                        	//return NULL;
+                                	}
+					else{
+						if (optarg[0] == '0' && strlen(optarg) == 1)
+							p->k = 0;
+						if (atoi(optarg) == 1)
+							p->k = 1;
+						if (atoi(optarg) == 2)
+							p->k = 2;
+						if (atoi(optarg) == 3)
+							p->k = 3;
+						if (p->k == -1) {
+        	                                	fprintf(stderr, "Argument nr %d: Wprowadzono nieprawidlowa wartosc parametru 'k'\n", optind - 2);
+                	                        	end = 1;
+							p->k = 0;
+                                	        	//return NULL;
+						}
+                                	}
 				}
-				if (p->k == -1) {
-					fprintf(stderr, "Wprowadzono nieprawodlowy parametr 'k'\n");
-					return NULL;
+				if( ile['k'] == 2 ){
+					printf("Wystepuja powtorzenia parametru -k\n");
+					end = 1;
 				}
 				break;
 			case 'g':
-				if (optarg[0] == '-') {
-					fprintf(stderr, "Parametr 'g' jest wymagany\n");
-					return NULL;
+				ile['g']++;
+				if( ile['g'] < 2 ){
+					if (optarg[0] == '-') {
+						fprintf(stderr, "Argument nr %d: Podaj wartosc dla parametru -g\n", optind - 2);
+						end = 1;
+						//return NULL;
+					}
+					else{
+						if (p->generuj < 1 || p->generuj > 100) {
+							fprintf(stderr, "Argument nr %d: Nieprawidlowa wartosc parametru -g\n", optind - 2);
+							end = 1;
+							//return NULL;
+						}
+						else{
+							p->generuj = atoi(optarg);
+						}
+					}
 				}
-				p->generuj = atoi(optarg);
-				if (p->generuj < 1 || p->generuj > 100) {
-					fprintf(stderr, "Nieprawidlowy parametr g\n");
-					return NULL;
+				if( ile['g'] == 2 ){
+					printf("Wystepuja powtorzenia parametru -g\n");
+					end = 1;
 				}
 				break;
 			case 'w':
-				if (optarg[0] == '-') {
-					fprintf(stderr, "Parametr 'w' jest wymagany\n");
-					return NULL;
-				}
-				p->wczytaj = optarg;
+				ile['w']++;
+				if( ile['w'] < 2 ){
+					if (optarg[0] == '-') {
+						fprintf(stderr, "Argument nr %d: Podaj wartosc dla parametru -w\n", optind - 2);
+						end = 1;
+						//return NULL;
+					}
+					else{
+						p->wczytaj = optarg;
+					}
 				break;
+				}
+				if( ile['w'] == 2 ){
+					printf("Wystepuja powtorzenia parametru -w\n");
+					end = 1;
+				}
 			case '?':
 				fprintf(stderr, "Nieznana opcja: '-%c'\n", optopt);
-				return NULL;
+				end = 1;
+				//return NULL;
 			case ':':
-				fprintf(stderr, "Opcja %c jest wymagana\n", optopt);
-				return NULL;
-			default:
-				fprintf(stderr, "Nie powinno cie tu byc\n");
-				return NULL;
+				if( ile[optopt] == 0 ){
+					fprintf(stderr, "Podaj wartosc dla paramteru %c\n", optopt);
+					end = 1;
+				}
+				//return NULL;
+			//default:
+				//fprintf(stderr, "Nie powinno cie tu byc\n");
+				//return NULL;
 		}
 	}
-	if ((p->m < 2 || p->m > 512) && p->m != -1) {
-		printf("Wprowadzono niepawidlowy parametr 'm'\n");
-		end = 1;
-	}
-	if ((p->n < 2 || p->n > 512) && p->n != -1) {
-		printf("Wprowadzono niepawidlowy parametr 'n'\n");
-		end = 1;
-	}
 	if (p->i == 0 && p->generuj == 0) {
-		printf("Wprowadzono niepawidlowy parametr 'i'\n");
+		printf("Wprowadzono niepawidlowy parametr i\n");
 		end = 1;
 	}
 	if (p->generuj != 0 && end == 0 && p->name != NULL) {
@@ -189,6 +291,7 @@ param getparam(int argc, char** argv) {
 		fprintf(stderr, "Nie wprowadzono wymaganego parametru k\n");
 		end = 1;
 	}
+	free(ile);
 	if (end == 1)
 		return NULL;
 	return p;
@@ -256,12 +359,12 @@ wchar_t* symbol(board b, int k, int w) {
 	return 0;
 }
 
-void fprint_board(FILE * stream, board b, int x) {
+void fprint_board(FILE * stream, board b, int x, int digits ) {
 	int i, j;
 	setlocale(LC_ALL, "C.UTF-8");
 	if (stream == stdout)
 		printf("\033[0;30;47m\n");
-	fprintf(stream, "%d:\n", x);
+	fprintf(stream, "#%0*d\n", digits, x);
 	fprintf(stream, "┌");
 	for (i = 0; i < b->n; i++)
 		fprintf(stream, "─");
@@ -330,24 +433,28 @@ void move(board b) {
 	}
 }
 
-void ant(board b, int i, char* name) {
+void ant(board b, int i, char* name, int digits) {
 	int j;
-	char file[100];
 	FILE* f;
-	if (name == NULL)
+	int dlugosc;
+	if (name == NULL){
+		dlugosc = 0;
 		f = stdout;
+	}
+	else{
+		dlugosc = strlen(name);
+	}
+	char file[dlugosc + digits + 2];
 	for (j = 0; j < i; j++) {
 		if (name != NULL) {
-			sprintf(file, "./boards/%s_%d", name, j);
+			sprintf(file, "%s_%0*d", name, digits, j);
 			f = fopen(file, "w");
 			if (f == NULL) {
 				fprintf(stderr, "Nie udalo sie otworzyc pliku %s\n", file);
 				exit(5);
 			}
 		}
-//		if (b->w == b->m/2 && b->k == b->n/2)
-//			printf("%d\n", j);
-		fprint_board(f, b, j);
+		fprint_board(f, b, j, digits);
 		if (name != NULL)
 			fclose(f);
 		move(b);
