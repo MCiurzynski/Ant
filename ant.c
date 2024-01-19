@@ -356,7 +356,7 @@ void ant(board b, int i, char* name, int s) {
 			fprint_board(f, b, j);
 		if (s == -1)
 			fprint_board(f, b, j);
-		if (s != 0) {
+		if (s != 0 && s != -1) {
 			if (j % s == 0 || j == i - 1)
 				fprint_board(f, b, j);
 		}
