@@ -344,24 +344,47 @@ void ant(board b, int i, char* name, int s) {
 	if (name == NULL)
 		f = stdout;
 	for (j = 0; j < i; j++) {
-		if (name != NULL) {
-			sprintf(file, "./boards/%s_%d", name, j);
-			f = fopen(file, "w");
-			if (f == NULL) {
-				fprintf(stderr, "Nie udalo sie otworzyc pliku %s\n", file);
-				exit(5);
+		if (s == 0 && ( j == i - 1 || j == 0)) {
+			if (name != NULL) {
+				sprintf(file, "./boards/%s_%d", name, j);
+				f = fopen(file, "w");
+				if (f == NULL) {
+					fprintf(stderr, "Nie udalo sie otworzyc pliku %s\n", file);
+					exit(5);
+				}
+			}
+			fprint_board(f, b, j);
+			if (name != NULL)
+				fclose(f);
+		}
+		if (s == -1) {
+			if (name != NULL) {
+				sprintf(file, "./boards/%s_%d", name, j);
+				f = fopen(file, "w");
+				if (f == NULL) {
+					fprintf(stderr, "Nie udalo sie otworzyc pliku %s\n", file);
+					exit(5);
+				}
+			}
+			fprint_board(f, b, j);
+			if (name != NULL)
+				fclose(f);
+		}
+		if (s != 0 && s != -1) {
+			if (j % s == 0 || j == i - 1) {
+				if (name != NULL) {
+					sprintf(file, "./boards/%s_%d", name, j);
+					f = fopen(file, "w");
+					if (f == NULL) {
+						fprintf(stderr, "Nie udalo sie otworzyc pliku %s\n", file);
+						exit(5);
+					}
+				}
+				fprint_board(f, b, j);
+				if (name != NULL)
+					fclose(f);
 			}
 		}
-		if (s == 0 && ( j == i - 1 || j == 0))
-			fprint_board(f, b, j);
-		if (s == -1)
-			fprint_board(f, b, j);
-		if (s != 0 && s != -1) {
-			if (j % s == 0 || j == i - 1)
-				fprint_board(f, b, j);
-		}
-		if (name != NULL)
-			fclose(f);
 		move(b);
 	}
 }

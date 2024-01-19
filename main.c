@@ -21,6 +21,6 @@ int main(int argc, char **argv) {
 	ant(b, p->i, p->name, p->s);
 	free_board(b);
 	free(p);
-	printf("Zakonczono programi\n");
+	printf("Zakonczono program!\n");
 	return 0;
 }
