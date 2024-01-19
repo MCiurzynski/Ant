@@ -94,7 +94,6 @@ param getparam(int argc, char** argv) {
 						if ( optind == argc || argv[optind][0] == '-' ) {
 							fprintf(stderr, "Argument nr %d: Nie wprowadzono wartosci parametru '--name'\n", optind - 1);
 							end = 1;
-							//return NULL;
 						}
 						else{
 							p->name = argv[optind];
@@ -108,7 +107,6 @@ param getparam(int argc, char** argv) {
 				else {
 					fprintf(stderr, "Nieznana opcja: '--%s'\n", optarg);
 					end = 1;
-					//return NULL;
 				}
 				break;
 			case 'm':
@@ -118,7 +116,6 @@ param getparam(int argc, char** argv) {
 						fprintf(stderr, "Argument nr %d: Podaj wartosc dla parametru -m\n", optind - 2);
 						end = 1;
 						p->m = 0;
-						//return NULL;
 					}
 					else{
 						p->m = atoi(optarg);
@@ -140,7 +137,6 @@ param getparam(int argc, char** argv) {
 						fprintf(stderr, "Argument nr %d: Podaj wartosc dla parametru n\n", optind - 2);
 						end = 1;
 						p->n = 0;
-						//return NULL;
 					}
 					else{
 						p->n = atoi(optarg);
@@ -162,7 +158,6 @@ param getparam(int argc, char** argv) {
 						fprintf(stderr, "Argument nr %d: Podaj wartosc dla parametru i\n", optind - 2);
 						end = 1;
 						p->i = 0;
-						//return NULL;
 					}
 					else{
 						p->i = atoi(optarg);
@@ -180,7 +175,6 @@ param getparam(int argc, char** argv) {
                                         	fprintf(stderr, "Argument nr %d: Podaj wartosc dla parametru k\n", optind - 2);
                                         	end = 1;
 						p->k = 0;
-                                        	//return NULL;
                                 	}
 					else{
 						if (optarg[0] == '0' && strlen(optarg) == 1)
@@ -195,7 +189,6 @@ param getparam(int argc, char** argv) {
         	                                	fprintf(stderr, "Argument nr %d: Wprowadzono nieprawidlowa wartosc parametru 'k'\n", optind - 2);
                 	                        	end = 1;
 							p->k = 0;
-                                	        	//return NULL;
 						}
                                 	}
 				}
@@ -210,13 +203,11 @@ param getparam(int argc, char** argv) {
 					if (optarg[0] == '-') {
 						fprintf(stderr, "Argument nr %d: Podaj wartosc dla parametru -g\n", optind - 2);
 						end = 1;
-						//return NULL;
 					}
 					else{
 						if (p->generuj < 1 || p->generuj > 100) {
 							fprintf(stderr, "Argument nr %d: Nieprawidlowa wartosc parametru -g\n", optind - 2);
 							end = 1;
-							//return NULL;
 						}
 						else{
 							p->generuj = atoi(optarg);
@@ -234,7 +225,6 @@ param getparam(int argc, char** argv) {
 					if (optarg[0] == '-') {
 						fprintf(stderr, "Argument nr %d: Podaj wartosc dla parametru -w\n", optind - 2);
 						end = 1;
-						//return NULL;
 					}
 					else{
 						p->wczytaj = optarg;
@@ -248,16 +238,11 @@ param getparam(int argc, char** argv) {
 			case '?':
 				fprintf(stderr, "Nieznana opcja: '-%c'\n", optopt);
 				end = 1;
-				//return NULL;
 			case ':':
 				if( ile[optopt] == 0 ){
-					fprintf(stderr, "Podaj wartosc dla paramteru %c\n", optopt);
+					fprintf(stderr, "Podaj wartosc dla parametru %c\n", optopt);
 					end = 1;
 				}
-				//return NULL;
-			//default:
-				//fprintf(stderr, "Nie powinno cie tu byc\n");
-				//return NULL;
 		}
 	}
 	if (p->i == 0 && p->generuj == 0) {
@@ -382,7 +367,7 @@ void fprint_board(FILE * stream, board b, int x, int digits ) {
 					fprintf(stream, "█");
 			}
 		}
-		fprintf(stream, "|\n");
+		fprintile['-']++;f(stream, "|\n");
 	}
 	fprintf(stream, "└");
 	for (i = 0; i < b->n ; i++)
@@ -436,13 +421,13 @@ void move(board b) {
 void ant(board b, int i, char* name, int digits) {
 	int j;
 	FILE* f;
-	int dlugosc;
+	int name_l;
 	if (name == NULL){
-		dlugosc = 0;
+		name_l = 0;
 		f = stdout;
 	}
 	else{
-		dlugosc = strlen(name);
+		name_l = strlen(name);
 	}
 	char file[dlugosc + digits + 2];
 	for (j = 0; j < i; j++) {
