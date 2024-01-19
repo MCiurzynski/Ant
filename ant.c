@@ -145,7 +145,6 @@ param getparam(int argc, char** argv) {
 					fprintf(stderr, "Parametr 'p' jest wymagany\n");
 				}
 				p->s = atoi(optarg);
-				printf("%d\n", p->s);
 				break;
 			case '?':
 				fprintf(stderr, "Nieznana opcja: '-%c'\n", optopt);
