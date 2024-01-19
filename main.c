@@ -18,7 +18,7 @@ int main(int argc, char **argv) {
 		b = wczytaj(p->wczytaj, p->k);
 	if (b == NULL)
 		return 1;
-	ant(b, p->i, p->name);
+	ant(b, p->i, p->name, p->s);
 	free_board(b);
 	free(p);
 	printf("Zakonczono programi\n");

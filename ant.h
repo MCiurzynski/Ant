@@ -15,6 +15,7 @@ typedef struct parametrs {
 	int n;
 	int i;
 	int k;
+	int s;
 	int generuj;
 	char *wczytaj;
 	char *name;
@@ -36,6 +37,6 @@ void fprint_board(FILE *, board, int);
 
 void move(board);
 
-void ant(board, int, char *);
+void ant(board, int, char *, int);
 
 #endif

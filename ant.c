@@ -62,11 +62,12 @@ param getparam(int argc, char** argv) {
 	p->n = -1;
 	p->i = -1;
 	p->k = -1;
+	p->s = -1;
 	p->generuj = 0;
 	p->wczytaj = NULL;
 	int opt, end = 0;
 	p->name = NULL;
-	while ((opt = getopt(argc, argv, ":-:n:m:i:p:k:g:w:")) != -1) {
+	while ((opt = getopt(argc, argv, ":-:n:m:i:p:k:g:w:s:")) != -1) {
 		switch (opt) {
 			case '-':
 				if (strcmp("name", optarg) == 0) {
@@ -138,6 +139,13 @@ param getparam(int argc, char** argv) {
 					return NULL;
 				}
 				p->wczytaj = optarg;
+				break;
+			case 's':
+				if (optarg[0] == '-') {
+					fprintf(stderr, "Parametr 'p' jest wymagany\n");
+				}
+				p->s = atoi(optarg);
+				printf("%d\n", p->s);
 				break;
 			case '?':
 				fprintf(stderr, "Nieznana opcja: '-%c'\n", optopt);
@@ -330,7 +338,7 @@ void move(board b) {
 	}
 }
 
-void ant(board b, int i, char* name) {
+void ant(board b, int i, char* name, int s) {
 	int j;
 	char file[100];
 	FILE* f;
@@ -345,9 +353,14 @@ void ant(board b, int i, char* name) {
 				exit(5);
 			}
 		}
-//		if (b->w == b->m/2 && b->k == b->n/2)
-//			printf("%d\n", j);
-		fprint_board(f, b, j);
+		if (s == 0 && ( j == i - 1 || j == 0))
+			fprint_board(f, b, j);
+		if (s == -1)
+			fprint_board(f, b, j);
+		if (s != 0) {
+			if (j % s == 0 || j == i - 1)
+				fprint_board(f, b, j);
+		}
 		if (name != NULL)
 			fclose(f);
 		move(b);
