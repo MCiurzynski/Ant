@@ -367,7 +367,7 @@ void fprint_board(FILE * stream, board b, int x, int digits ) {
 					fprintf(stream, "█");
 			}
 		}
-		fprintile['-']++;f(stream, "|\n");
+		fprintf(stream, "|\n");
 	}
 	fprintf(stream, "└");
 	for (i = 0; i < b->n ; i++)
@@ -429,7 +429,7 @@ void ant(board b, int i, char* name, int digits) {
 	else{
 		name_l = strlen(name);
 	}
-	char file[dlugosc + digits + 2];
+	char file[name_l + digits + 2];
 	for (j = 0; j < i; j++) {
 		if (name != NULL) {
 			sprintf(file, "%s_%0*d", name, digits, j);
